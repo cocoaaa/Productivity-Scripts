@@ -33,7 +33,7 @@ done
 exit_code=0
 \command ls -l "${tmpdir}"
 printf 'tensorboard --logdir %s\n' "${tmpdir}"
-#tensorboard --logdir "${tmpdir}" --bind_all || exit_code=$?
+#tensorboard --logdir "${tmpdir}" --bind_all --port "${PORT}" || exit_code=$?
 
 # remove temps
 rm -f "${tmpdir}"/*
