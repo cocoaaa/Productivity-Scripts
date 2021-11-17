@@ -1,5 +1,6 @@
 #!/bin/bash
 #source: https://stackoverflow.com/a/14203146
+set -eu
 DIRS=()
 while [[ $# -gt 0 ]]; do
 	key="$1"
@@ -16,15 +17,14 @@ while [[ $# -gt 0 ]]; do
 	esac
 done
 
-set -- "${DIRS[@]}" # restore positional parameters
 echo "Tensorboard PORT = ${PORT}"
 echo "link these dirs: $@"
 # Call Tensorboard on mUltiple logdirs 
 # source: https://github.com/tensorflow/tensorboard/issues/179#issuecomment-518729885
-set -eu
 tmpdir="$(mktemp -d)"
+set -- "${DIRS[@]}" # restore positional parameters
 for arg; do
-	#echo "$arg"
+	echo "$arg"
 	case "${arg}" in 
 		/*) ln -s "${arg}" "${tmpdir}/" ;;
 		*) ln -s "${PWD}"/"${arg}" "${tmpdir}/" ;;
@@ -33,7 +33,8 @@ done
 exit_code=0
 \command ls -l "${tmpdir}"
 printf 'tensorboard --logdir %s\n' "${tmpdir}"
-#tensorboard --logdir "${tmpdir}" --bind_all --port "${PORT}" || exit_code=$?
+echo "hi"
+tensorboard --logdir "${tmpdir}" --bind_all --port "${PORT}" || exit_code=$?
 
 # remove temps
 rm -f "${tmpdir}"/*
